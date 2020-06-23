@@ -1,0 +1,14 @@
+p,
+li {
+  line-height: 1.6;
+  font-size: 16px;
+  text-align: left;
+}
+
+math {
+  font-size: 17px;
+}
+
+a {
+  text-decoration: none;
+}

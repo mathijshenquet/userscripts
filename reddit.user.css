@@ -1,0 +1,103 @@
+/* remove sidebar on comments page */
+
+@media (max-width: 1100px) {
+  body .content[role="main"] {
+    margin-right: 5px;
+  }
+
+  body .side {
+    display: none;
+  }
+}
+
+/* improve media preview */
+
+body.listing-page .entry {
+  overflow: inherit;
+}
+
+body.listing-page .entry .top-matter {
+  overflow: auto;
+}
+
+body.listing-page .expando {
+  overflow: hidden;
+  margin-bottom: 0;
+}
+
+body.listing-page .media-preview img {
+  display: block;
+}
+
+/* compactify comment box */
+
+/* */
+
+.usertext-edit {
+  max-width: auto;
+  width: auto;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+}
+
+.usertext-edit .markdownEditor-wrapper {
+  grid-column: span 2;
+}
+
+.usertext-edit .md {
+  display: inline-block;
+}
+
+.usertext-edit .md textarea {
+  height: 80px;
+}
+
+.usertext-edit .bottom-area {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-start;
+}
+
+.usertext-edit .bottom-area > *:last-child {
+  flex-grow: 1;
+}
+
+.usertext-edit .bottom-area > * {
+  margin-left: 10px;
+}
+
+.usertext-edit .markhelp {
+  grid-column: span 2;
+}
+
+.usertext-edit .usertext-buttons {
+  display: flex;
+  align-items: flex-start;
+}
+
+.usertext-edit .usertext-buttons > * {
+  margin-top: 0;
+}
+
+.usertext-edit .md {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.usertext-edit .RESBigEditorPop {
+  display: none;
+}
+
+/**/
+
+/* resizer handle */
+
+.res-media-movable {
+  display: flex;
+  align-items: flex-end;
+}
+
+.res-media-movable .res-iframe-expando-drag-handle {
+  font-size: 13px;
+}

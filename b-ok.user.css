@@ -1,0 +1,43 @@
+.fb-like {
+  display: none;
+}
+
+table.resItemTable td.itemCover {
+  width: 116px;
+  height: 150px;
+}
+
+body {
+  overflow-y: scroll;
+}
+
+body > table {
+  min-height: 100%;
+}
+
+body > table > tbody > tr:first-child > td > div.container-fluid {
+  height: 52px !important;
+  overflow: hidden;
+}
+
+body > table > tbody > tr:nth-child(2) > td {
+  height: 100%;
+  vertical-align: top;
+}
+
+#searchFormWithLogo {
+  overflow: hidden;
+  height: 221px;
+}
+
+ul#subprojectsSearch > li {
+  overflow: hidden;
+  height: 40px;
+  width: 160px;
+  text-align: center;
+  padding: 12px;
+}
+
+img.cover {
+  opacity: 1 !important;
+}
