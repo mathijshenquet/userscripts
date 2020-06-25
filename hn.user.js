@@ -4,14 +4,17 @@
 // @grant       none
 // @version     0.1
 // @author      mthq
-// @run-at   document-start
+// @resource    style https://raw.githubusercontent.com/mathijshenquet/userscripts/master/hn.user.css
+// @downloadURL https://raw.githubusercontent.com/mathijshenquet/userscripts/master/hn.user.js
+// @grant       GM_getResourceText GM_addStyle
+// @run-at      document-start
 // ==/UserScript==
 
 function log(...args) {
   console.log("HNq", ...args);
 }
 
-log("init");
+GM.addStyle(GM.getResourceText("style"));
 
 /*
 interface Task {
