@@ -1,12 +1,11 @@
 // ==UserScript==
 // @name        HNq
 // @match       https://news.ycombinator.com/*
-// @grant       none
 // @version     0.1
 // @author      mthq
+// @grant       GM_getResourceText GM_addStyle
 // @resource    style https://raw.githubusercontent.com/mathijshenquet/userscripts/master/hn.user.css
 // @downloadURL https://raw.githubusercontent.com/mathijshenquet/userscripts/master/hn.user.js
-// @grant       GM_getResourceText GM_addStyle
 // @run-at      document-start
 // ==/UserScript==
 
@@ -14,7 +13,8 @@ function log(...args) {
   console.log("HNq", ...args);
 }
 
-GM_addStyle(GM_getResourceText("style"));
+let style = GM.getResourceText("style");
+GM.addStyle(style);
 
 /*
 interface Task {
