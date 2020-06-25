@@ -14,7 +14,7 @@ function log(...args) {
   console.log("HNq", ...args);
 }
 
-GM.addStyle(GM.getResourceText("style"));
+GM_addStyle(GM_getResourceText("style"));
 
 /*
 interface Task {
