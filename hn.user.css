@@ -29,23 +29,33 @@ a:visited {
   color: #666;
 }
 
-.ind {
+.comment-container {
   --width: 20px;
   --start: 19px; /* 30px */
   --color: var(--ind);
-  background: left/var(--width)
-    linear-gradient(
-      to right,
-      transparent var(--start),
-      var(--color) var(--start),
-      var(--color) calc(var(--start) + 1px),
-      transparent calc(var(--start) + 1px),
-      transparent var(--width)
-    );
+
+  display: flex;  
+  flex-direction: row;
+  align-items: stretch;
+  padding-left: 2px;
 }
 
-.ind img {
-  width: calc(var(--width) * var(--lvl) + 2px);
+.comment-container > * {
+  flex: 0 0 auto;
+}
+
+.comment-container > *:last-child {
+  flex-grow: 1;
+}
+
+.votearrow {
+  transform: none !important;
+}
+
+.comment-container .ind {
+  flex: 0 0 var(--width);
+  box-sizing: border-box;
+  border-right: 1px solid var(--color);
 }
 
 table.comment-tree .athing td {
@@ -112,7 +122,6 @@ table.comment-tree .votearrow {
 
 .comtr.athing .default {
   padding: 0.6em 0;
-  width: 100%;
   /* border-bottom: 1px solid #ddd;*/
 }
 

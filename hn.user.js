@@ -3,8 +3,9 @@
 // @match       https://news.ycombinator.com/*
 // @version     0.1
 // @author      mthq
-// @grant       GM_getResourceText GM_addStyle
-// @resource    style https://raw.githubusercontent.com/mathijshenquet/userscripts/master/hn.user.css
+// @grant       GM_getResourceText 
+// @grant       GM_addStyle
+// @resource    style ./hn.user.css
 // @downloadURL https://raw.githubusercontent.com/mathijshenquet/userscripts/master/hn.user.js
 // @run-at      document-start
 // ==/UserScript==
@@ -13,8 +14,7 @@ function log(...args) {
   console.log("HNq", ...args);
 }
 
-let style = GM.getResourceText("style");
-GM.addStyle(style);
+GM_addStyle(GM_getResourceText("style"));
 
 /*
 interface Task {
@@ -53,28 +53,6 @@ function unfold(target) {
 
 function setToggle(toggle, collapsed) {
   toggle.innerText = collapsed ? `[${toggle.getAttribute("n")} more]` : "[-]";
-}
-
-function toggle(ev, id) {
-  let toggle = ev.target;
-  log("toggle", id);
-
-  let target = document.getElementById(id);
-  let collapsed = target.classList.toggle("coll");
-  setToggle(toggle, collapsed);
-
-  if (collapsed) {
-    fold(target);
-  } else {
-    unfold(target);
-  }
-
-  if (document.getElementById("logout")) {
-    new Image().src = "collapse?id=" + id + (collapsed ? "" : "&un=true");
-  }
-
-  ev.stopPropagation();
-  return false;
 }
 
 /* end toggle */
@@ -156,49 +134,142 @@ const loadMore = {
   },
 };
 
-const fixIndent = {
+class Comment{
+  constructor(row, cell, $toggle){
+    this.row = row;
+    this.cell = cell;
+    this.id = +row.getAttribute("id");
+    this.collapsed = row.classList.contains("coll");
+    this.$toggle = $toggle;
+    this.parents = null;
+    this.hidden = false;
+
+    setToggle($toggle, this.collapsed);
+
+    $toggle.removeAttribute("onclick");
+    $toggle.onclick = (ev) => this.toggle(ev);
+  }
+
+  hide(){
+    this.hidden = true; 
+    this.row.classList.add("noshow");
+  }
+
+  make(cells, parents){
+    this.parents = parents;
+
+    let container = document.createElement("div");
+    container.className = "comment-container";
+
+    // make the indent 
+    parents.forEach((item) => {
+      let indItem = document.createElement("div");
+      indItem.className = "ind";
+      container.appendChild(indItem);
+    })
+
+    // add the other items
+    for(let i = 1; i < cells.length; i++){
+      let cell = cells[i];
+
+      let item = document.createElement("div");
+      item.className = cell.className;
+
+      let child;
+      while((child = cell.firstElementChild)){
+        item.appendChild(child);
+      }
+      container.appendChild(item);
+    }
+
+    this.container = container;
+    this.cell.lastElementChild.remove();
+    this.cell.appendChild(container);
+  }
+
+  toggle(ev){
+    this.collapsed = this.row.classList.toggle("coll");
+    setToggle(this.$toggle, this.collapsed);
+  
+    if (this.collapsed) {
+      fold(this.row);
+    } else {
+      unfold(this.row);
+    }
+  
+    if (document.getElementById("logout")) {
+      new Image().src = "collapse?id=" + this.id + (this.collapsed ? "" : "&un=true");
+    }
+  
+    if(ev)
+      ev.stopPropagation();
+    
+    return false;
+  }
+}
+
+const fixComment = {
   query: ".athing.comtr",
 
   flag: "level",
 
-  state: null,
+  chain: [],
 
-  run(comment) {
-    let idStr = comment.getAttribute("id");
-    const togg = comment.querySelector("a.togg");
-    const ind = comment.querySelector(".ind img");
-    if (!ind || !togg || !ind) {
-      console.log(comment);
-      return false;
+  hide: null,
+
+  run(row) {
+    const cell = row.cells[0];
+    const toggle = cell.querySelector("a.togg");
+    const ind = cell.querySelector(".ind img");
+    const innerRow = cell.querySelector("table tr");
+    if (!ind || !toggle || !cell || !innerRow) {
+      log("incomplete", row);
+      return false; 
     }
 
-    const id = +idStr;
-    togg.removeAttribute("onclick");
-    togg.onclick = function () {
-      return toggle(event, id);
-    };
+    let comment = new Comment(row, cell, toggle);
 
-    const level = +ind.getAttribute("width") / 40;
-    comment.style.setProperty("--lvl", level);
+    let level = +ind.getAttribute("width") / 40;
+    while(this.chain.length > level)
+      this.chain.pop();
 
-    if (this.state != null) {
-      if (level > this.state) {
-        comment.classList.add("noshow");
-      } else {
-        this.state = null;
-      }
+    let parents = this.chain.slice(0);
+    this.chain.push(comment)
+
+    if (this.hide != null && level > this.hide) {
+      comment.hide()
+    }else{
+      this.hide = comment.collapsed ? level : null;
     }
 
-    let collapsed = comment.classList.contains("coll");
-    setToggle(togg, collapsed);
-    if (collapsed && this.state == null) {
-      console.log("set", level, comment);
-      this.state = level;
-    }
+    comment.make(innerRow.cells, parents);
 
-    return level;
+    return level; 
   },
 };
+
+const stripStyle = {
+  query: "link",
+
+  flag: "strip-style",
+
+  mode: "first",
+
+  run(link){
+    let sheet = link.sheet;
+    try{
+      let ruleList = sheet.cssRules;
+      for (let i=0; i < ruleList.length; i++) {
+        let rule = ruleList[i];
+        if(rule instanceof CSSMediaRule && rule.cssRules.length > 30){
+          sheet.deleteRule(i);
+        }
+      }
+    }catch(er){
+      return false;
+    }
+  }
+}
 
 const addBest = {
   query: ".pagetop",
@@ -292,9 +363,11 @@ const Runner = {
 
     if (result !== false) match.dataset[task.flagJs] = result;
     else delete match.dataset[task.flagJs];
+
+    return result === false;
   },
 
-  tick(next) {
+  tick() {
     log(
       "Runner#tick",
       Runner.done ? "done" : Runner.i++,
@@ -303,9 +376,13 @@ const Runner = {
     Runner.tasks = Runner.tasks.filter((task) => {
       if (task.mode === "first") {
         let match = document.querySelector(task.query);
-        if (match === null) return true;
-        if (match.dataset[task.flagJs] == null) Runner.exec(task, match);
-        return false;
+        if (match === null)
+          return true;
+
+        if (match.dataset[task.flagJs] == null)
+          return Runner.exec(task, match);
+        else
+          return false;
       } else {
         let matches = document.querySelectorAll(task.nonFlagged);
         matches.forEach((match) => Runner.exec(task, match));
@@ -347,4 +424,4 @@ const Runner = {
   },
 };
 
-Runner.start(fixItem, fixIndent, addBest, loadMore);
+Runner.start(fixItem, fixComment, addBest, loadMore, stripStyle);
