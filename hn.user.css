@@ -22,6 +22,8 @@
   --sec-b3: #adadaa;
   --sec-b4: #b9b9b6;
   --ind: #e0e0e0;
+  --orange: #ff6600;
+  --orange-bd: #ffa35d;
 }
 
 .hnmore a:link,
@@ -30,8 +32,7 @@ a:visited {
 }
 
 .comment-container {
-  --width: 20px;
-  --start: 19px; /* 30px */
+  --width: 18px;
   --color: var(--ind);
 
   display: flex;  
@@ -54,8 +55,25 @@ a:visited {
 
 .comment-container .ind {
   flex: 0 0 var(--width);
-  box-sizing: border-box;
-  border-right: 1px solid var(--color);
+  display: flex;
+  justify-content: center;
+
+  cursor: pointer;
+
+  transition: background-color 200ms;
+  background: 
+    linear-gradient(to right, 
+      var(--bg) calc(50% - 1px),
+      var(--bg-m) calc(50% - 1px),
+      var(--bg-m) 50%,
+      transparent 50%,
+      transparent calc(50% + 1px),
+      var(--bg) calc(50% + 1px)), 
+    var(--color);
+}
+
+.comment-container .ind.hover {
+  background-color: var(--orange-bd);
 }
 
 table.comment-tree .athing td {
@@ -75,9 +93,12 @@ table.comment-tree .votearrow {
   margin: 3px 4px 6px 4px;
 }
 
+.athing.comtr .default {
+  max-width: var(--comment-width);
+}
+
 .comment {
   line-height: 1.5;
-  max-width: var(--comment-width);
   overflow: visible;
   position: relative;
 }
@@ -117,15 +138,24 @@ table.comment-tree .votearrow {
 }
 
 .comtr.athing .votelinks {
-  padding: 0.6em 0;
+  display: flex;
+  flex-direction: column;
 }
 
-.comtr.athing .default {
-  padding: 0.6em 0;
-  /* border-bottom: 1px solid #ddd;*/
+.comtr.athing .votelinks > .ind {
+  flex: 1 0;
 }
 
-table.comment-tree .athing.coll .default,
+.comtr.athing .votelinks > center {
+  padding: 0.6em 0;
+  background: var(--bg);
+}
+
+.comtr.athing .default > div:not(.comment) {
+  padding: 0.5em 0 0.3em 0;
+}
+
+/* table.comment-tree .athing.coll .default, */
 table.comment-tree .athing.coll .votelinks {
   padding-bottom: 0;
 }
@@ -224,7 +254,6 @@ html[op="newcomments"] td[bgcolor="#ff6600"] td:first-child {
 
 .comhead:not(.sitebit) {
   display: flex;
-  max-width: var(--comment-width);
 }
 
 .comhead:not(.sitebit) > *:not(:empty) {
@@ -255,10 +284,9 @@ html[op="newcomments"] td[bgcolor="#ff6600"] td:first-child {
 /**/
 .athing.comtr .comhead {
   position: relative;
-  padding: 0.3em;
-  margin: -0.3em;
+  padding: 0.3em 0.15em;
+  margin-left: -0.15em;
   padding-right: 0;
-  margin-right: 0;
   transition: background 200ms;
 }
 
@@ -290,16 +318,27 @@ html[op="newcomments"] td[bgcolor="#ff6600"] td:first-child {
   color: var(--sec-b1);
 }
 
-.athing.comtr.coll .comment {
-  height: 0;
-  overflow: hidden;
+.athing.comtr.coll .default {
   border-bottom: 1px solid var(--ind);
 }
 
-.athing.comtr.coll .votelinks {
-  visibility: hidden;
-  pointer-events: none;
-  cursor: default;
+.athing.comtr.coll .comment {
+  height: 0;
+  overflow: hidden;
+}
+
+.athing.comtr .votelinks {
+  width: var(--width);
+}
+
+.athing.comtr.coll .votelinks > center::before {
+  content: "+";
+  color: var(--sec-b4);
+  text-shadow: 1px -1px white;
+}
+
+.comtr.athing.coll .votelinks > center > a {
+  display: none;
 }
 
 /**/

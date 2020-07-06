@@ -143,16 +143,35 @@ class Comment{
     this.$toggle = $toggle;
     this.parents = null;
     this.hidden = false;
+    this.inds = [];
 
     setToggle($toggle, this.collapsed);
 
     $toggle.removeAttribute("onclick");
-    $toggle.onclick = (ev) => this.toggle(ev);
+    $toggle.addEventListener("click", (ev) => this.toggle(ev));
   }
 
-  hide(){
+  hide(){   
     this.hidden = true; 
-    this.row.classList.add("noshow");
+    this.row.classList.add("noshow");   
+  }
+
+  makeInd(){    
+    let ind = document.createElement("div");
+    ind.className = "ind";   
+    ind.dataset.id = this.id;
+     
+    ind.addEventListener("mouseenter", () => this.hover(true)); 
+    ind.addEventListener("mouseleave", () => this.hover(false));
+    ind.addEventListener("click", (ev) => this.toggle(ev));
+
+    this.inds.push(ind);        
+    return ind; 
+  }
+
+  hover(state){ 
+    this.container.classList.toggle("hover", state); 
+    this.inds.forEach((ind) => ind.classList.toggle("hover", state))
   }
 
   make(cells, parents){
@@ -163,10 +182,11 @@ class Comment{
 
     // make the indent 
     parents.forEach((item) => {
-      let indItem = document.createElement("div");
-      indItem.className = "ind";
+      let indItem = item.makeInd();
       container.appendChild(indItem);
     })
+
+    // add votelink
 
     // add the other items
     for(let i = 1; i < cells.length; i++){
@@ -177,11 +197,19 @@ class Comment{
 
       let child;
       while((child = cell.firstElementChild)){
-        item.appendChild(child);
+        child.removeAttribute("style");
+        if(child instanceof HTMLBRElement) 
+          child.remove();
+        else
+          item.appendChild(child);
       }
+  
+      if(i == 1)
+        item.append(this.makeInd());  
+      
       container.appendChild(item);
     }
-
+    
     this.container = container;
     this.cell.lastElementChild.remove();
     this.cell.appendChild(container);
