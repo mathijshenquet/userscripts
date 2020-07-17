@@ -3,7 +3,7 @@
 // @match       https://news.ycombinator.com/*
 // @version     0.1
 // @author      mthq
-// @grant       GM_getResourceText 
+// @grant       GM_getResourceText
 // @grant       GM_addStyle
 // @resource    style ./hn.user.css
 // @downloadURL https://raw.githubusercontent.com/mathijshenquet/userscripts/master/hn.user.js
@@ -52,7 +52,7 @@ function unfold(target) {
 }
 
 function setToggle(toggle, collapsed) {
-  toggle.innerText = collapsed ? `[${toggle.getAttribute("n")} more]` : "[-]";
+  toggle.innerText = collapsed ? `[${toggle.getAttribute("n")} more]` : "[–]";
 }
 
 /* end toggle */
@@ -134,8 +134,8 @@ const loadMore = {
   },
 };
 
-class Comment{
-  constructor(row, cell, $toggle){
+class Comment {
+  constructor(row, cell, $toggle) {
     this.row = row;
     this.cell = cell;
     this.id = +row.getAttribute("id");
@@ -151,87 +151,84 @@ class Comment{
     $toggle.addEventListener("click", (ev) => this.toggle(ev));
   }
 
-  hide(){   
-    this.hidden = true; 
-    this.row.classList.add("noshow");   
+  hide() {
+    this.hidden = true;
+    this.row.classList.add("noshow");
   }
 
-  makeInd(){    
+  makeInd() {
     let ind = document.createElement("div");
-    ind.className = "ind";   
+    ind.className = "ind";
     ind.dataset.id = this.id;
-     
-    ind.addEventListener("mouseenter", () => this.hover(true)); 
+
+    ind.addEventListener("mouseenter", () => this.hover(true));
     ind.addEventListener("mouseleave", () => this.hover(false));
     ind.addEventListener("click", (ev) => this.toggle(ev));
 
-    this.inds.push(ind);        
-    return ind; 
+    this.inds.push(ind);
+    return ind;
   }
 
-  hover(state){ 
-    this.container.classList.toggle("hover", state); 
-    this.inds.forEach((ind) => ind.classList.toggle("hover", state))
+  hover(state) {
+    this.row.classList.toggle("hover", state);
+    this.inds.forEach((ind) => ind.classList.toggle("hover", state));
   }
 
-  make(cells, parents){
+  make(cells, parents) {
     this.parents = parents;
 
     let container = document.createElement("div");
     container.className = "comment-container";
 
-    // make the indent 
+    // make the indent
     parents.forEach((item) => {
       let indItem = item.makeInd();
       container.appendChild(indItem);
-    })
+    });
 
-    // add votelink
+    // add votelinks
 
     // add the other items
-    for(let i = 1; i < cells.length; i++){
+    for (let i = 1; i < cells.length; i++) {
       let cell = cells[i];
 
       let item = document.createElement("div");
       item.className = cell.className;
 
       let child;
-      while((child = cell.firstElementChild)){
+      while ((child = cell.firstElementChild)) {
         child.removeAttribute("style");
-        if(child instanceof HTMLBRElement) 
-          child.remove();
-        else
-          item.appendChild(child);
+        if (child instanceof HTMLBRElement) child.remove();
+        else item.appendChild(child);
       }
-  
-      if(i == 1)
-        item.append(this.makeInd());  
-      
+
+      if (i == 1) item.append(this.makeInd());
+
       container.appendChild(item);
     }
-    
+
     this.container = container;
     this.cell.lastElementChild.remove();
     this.cell.appendChild(container);
   }
 
-  toggle(ev){
+  toggle(ev) {
     this.collapsed = this.row.classList.toggle("coll");
     setToggle(this.$toggle, this.collapsed);
-  
+
     if (this.collapsed) {
       fold(this.row);
     } else {
       unfold(this.row);
     }
-  
+
     if (document.getElementById("logout")) {
-      new Image().src = "collapse?id=" + this.id + (this.collapsed ? "" : "&un=true");
+      new Image().src =
+        "collapse?id=" + this.id + (this.collapsed ? "" : "&un=true");
     }
-  
-    if(ev)
-      ev.stopPropagation();
-    
+
+    if (ev) ev.stopPropagation();
+
     return false;
   }
 }
@@ -252,27 +249,26 @@ const fixComment = {
     const innerRow = cell.querySelector("table tr");
     if (!ind || !toggle || !cell || !innerRow) {
       log("incomplete", row);
-      return false; 
+      return false;
     }
 
     let comment = new Comment(row, cell, toggle);
 
     let level = +ind.getAttribute("width") / 40;
-    while(this.chain.length > level)
-      this.chain.pop();
+    while (this.chain.length > level) this.chain.pop();
 
     let parents = this.chain.slice(0);
-    this.chain.push(comment)
+    this.chain.push(comment);
 
     if (this.hide != null && level > this.hide) {
-      comment.hide()
-    }else{
+      comment.hide();
+    } else {
       this.hide = comment.collapsed ? level : null;
     }
 
     comment.make(innerRow.cells, parents);
 
-    return level; 
+    return level;
   },
 };
 
@@ -283,21 +279,21 @@ const stripStyle = {
 
   mode: "first",
 
-  run(link){
+  run(link) {
     let sheet = link.sheet;
-    try{
+    try {
       let ruleList = sheet.cssRules;
-      for (let i=0; i < ruleList.length; i++) {
+      for (let i = 0; i < ruleList.length; i++) {
         let rule = ruleList[i];
-        if(rule instanceof CSSMediaRule && rule.cssRules.length > 30){
+        if (rule instanceof CSSMediaRule && rule.cssRules.length > 30) {
           sheet.deleteRule(i);
         }
       }
-    }catch(er){
+    } catch (er) {
       return false;
     }
-  }
-}
+  },
+};
 
 const addBest = {
   query: ".pagetop",
@@ -404,13 +400,10 @@ const Runner = {
     Runner.tasks = Runner.tasks.filter((task) => {
       if (task.mode === "first") {
         let match = document.querySelector(task.query);
-        if (match === null)
-          return true;
+        if (match === null) return true;
 
-        if (match.dataset[task.flagJs] == null)
-          return Runner.exec(task, match);
-        else
-          return false;
+        if (match.dataset[task.flagJs] == null) return Runner.exec(task, match);
+        else return false;
       } else {
         let matches = document.querySelectorAll(task.nonFlagged);
         matches.forEach((match) => Runner.exec(task, match));
