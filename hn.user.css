@@ -56,12 +56,11 @@ a:visited {
 .comment-container .ind {
   flex: 0 0 var(--width);
   display: flex;
-  justify-content: center;
-
+  flex-direction: column;
+  align-items: center;
   cursor: pointer;
 
-  transition: background-color 200ms;
-  background: linear-gradient(
+  /*background: linear-gradient(
       to right,
       var(--bg) calc(var(--width) / 2 - 2px),
       var(--bg-m) calc(var(--width) / 2 - 2px),
@@ -70,10 +69,18 @@ a:visited {
       transparent calc(var(--width) / 2 + 0px),
       var(--bg) calc(var(--width) / 2 + 0px)
     ),
-    var(--color);
+    var(--color);*/
 }
 
-.comment-container .ind.hover {
+.comment-container .ind > .stripe {
+  width: 2px;
+  border-right: 1px solid white;
+  transition: background-color 200ms;
+  background-color: var(--color);
+  flex: 1 0;
+}
+
+.comment-container .ind.hover > .stripe {
   background-color: var(--orange-bd);
 }
 
@@ -231,26 +238,6 @@ table.fatitem td {
   padding: 0;
 }
 
-html[op="news"] img[src="y18.gif"],
-html[op="newest"] img[src="y18.gif"],
-html[op="best"] img[src="y18.gif"],
-html[op="front"] img[src="y18.gif"] {
-  margin-right: 0px;
-  margin-left: 12px;
-}
-
-html[op="item"] img[src="y18.gif"],
-html[op="threads"] img[src="y18.gif"],
-html[op="newcomments"] img[src="y18.gif"] {
-  margin-left: -7px;
-}
-
-html[op="item"] td[bgcolor="#ff6600"] td:first-child,
-html[op="threads"] td[bgcolor="#ff6600"] td:first-child,
-html[op="newcomments"] td[bgcolor="#ff6600"] td:first-child {
-  padding-right: 0 !important;
-}
-
 /* expand button */
 
 .comhead:not(.sitebit) {
@@ -380,4 +367,63 @@ td.more:hover {
   outline: 0;
 }
 
-/**/
+/* NEW */
+
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --header-height: 24px;
+  --footer-height: 100px;
+  --content-top: 10px;
+  --content-bottom: 50px;
+}
+
+body {
+  background: var(--bg);
+  overflow-y: scroll;
+}
+
+#header {
+  background: var(--orange);
+}
+
+.container {
+  max-width: 960px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+#header > .container {
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+}
+
+#content {
+  margin: var(--content-top) 0 var(--content-bottom) 0;
+}
+
+#head-nav {
+  flex: 1 0;
+}
+
+#head-logo {
+  margin-right: 4px;
+}
+
+#content {
+  min-height: calc(
+    100vh - var(--content-top) - var(--content-bottom) - var(--footer-height) -
+      var(--header-height)
+  );
+}
+
+#footer {
+  border-top: 2px solid var(--orange);
+  height: var(--footer-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

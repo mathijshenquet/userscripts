@@ -157,9 +157,9 @@ class Comment {
   }
 
   makeInd() {
-    let ind = document.createElement("div");
-    ind.className = "ind";
+    let ind = mk(".ind");
     ind.dataset.id = this.id;
+    mk(ind, ".stripe");
 
     ind.addEventListener("mouseenter", () => this.hover(true));
     ind.addEventListener("mouseleave", () => this.hover(false));
@@ -295,29 +295,6 @@ const stripStyle = {
   },
 };
 
-const addBest = {
-  query: ".pagetop",
-
-  flag: "add-best",
-
-  mode: "first",
-
-  run(pagetop) {
-    let bestlink = '<a href="best">best</a>';
-
-    const op = document.documentElement.getAttribute("op");
-    if (op == "best") {
-      pagetop.lastChild.remove();
-      pagetop.lastChild.remove();
-      pagetop.lastChild.remove();
-      bestlink = `<span class="topsel">${bestlink}</span>`;
-    }
-
-    let newest = pagetop.firstElementChild;
-    newest.insertAdjacentHTML("afterend", `${bestlink} | `);
-  },
-};
-
 const fixItem = {
   query: "table.itemlist > tbody > tr.athing",
 
@@ -371,45 +348,60 @@ const Runner = {
   tasks: [],
 
   add(task) {
-    task.flagJs = dashToCamel(task.flag);
-    task.nonFlagged = `${task.query}:not([data-${task.flag}])`;
+    if (task.flag) {
+      task.flagJs = dashToCamel(task.flag);
+      task.nonFlagged = `${task.query}:not([data-${task.flag}])`;
+    } else {
+      task.nonFlagged = `${task.query}`;
+    }
     Runner.tasks.push(task);
   },
 
   i: 0,
 
-  exec(task, match) {
-    log("Runner#exec", task.flag);
+  exec(task, $match) {
+    if (task.flag) {
+      log("Runner#exec", task.flag);
+      $match.dataset[task.flagJs] = "";
 
-    match.dataset[task.flagJs] = "";
+      let result = task.run($match) ?? "";
 
-    let result = task.run(match) ?? "";
+      if (result !== false) $match.dataset[task.flagJs] = result;
+      else delete $match.dataset[task.flagJs];
 
-    if (result !== false) match.dataset[task.flagJs] = result;
-    else delete match.dataset[task.flagJs];
+      return result === false;
+    } else {
+      task.run($match);
+      $match.remove();
 
-    return result === false;
+      return true;
+    }
   },
 
   tick() {
     log(
-      "Runner#tick",
+      "Runner#tick ",
       Runner.done ? "done" : Runner.i++,
       "(" + Runner.tasks.map((task) => task.flag).join(", ") + ")"
     );
-    Runner.tasks = Runner.tasks.filter((task) => {
+    let toDo = Runner.tasks;
+    Runner.tasks = [];
+    let toDoLeft = toDo.filter((task) => {
       if (task.mode === "first") {
-        let match = document.querySelector(task.query);
-        if (match === null) return true;
+        let $match = document.querySelector(task.query);
+        if ($match === null) return true;
 
-        if (match.dataset[task.flagJs] == null) return Runner.exec(task, match);
+        if ($match.dataset[task.flagJs] == null)
+          return Runner.exec(task, $match);
         else return false;
       } else {
         let matches = document.querySelectorAll(task.nonFlagged);
-        matches.forEach((match) => Runner.exec(task, match));
+        matches.forEach(($match) => Runner.exec(task, $match));
         return true;
       }
     });
+
+    Runner.tasks.push(...toDoLeft);
 
     return Runner.tasks.length > 0;
   },
@@ -445,4 +437,147 @@ const Runner = {
   },
 };
 
-Runner.start(fixItem, fixComment, addBest, loadMore, stripStyle);
+let re = /^([^\.#]+)?(#[^\.#]+)?((?:\.[^\.#]+)*)$/;
+function mk(arg0, arg1) {
+  let desc, $target;
+  if (arg1) {
+    desc = arg1;
+    $target = arg0;
+  } else {
+    desc = arg0;
+  }
+
+  let match = re.exec(desc);
+  if (match === null) throw new Error(`Could not parse: ${desc}`);
+
+  let type = match[1] ?? "div";
+  let id = match[2];
+  let classList = match[3].split(".").slice(1);
+
+  let $elem = document.createElement(type);
+  if (classList.length > 0) {
+    $elem.className = classList.join(" ");
+  }
+
+  if (id) {
+    $elem.id = id.slice(1); // chop of the '#'
+  }
+
+  if ($target) {
+    $target.appendChild($elem);
+  }
+
+  return $elem;
+}
+
+let Page = {
+  init($container) {
+    this.$container = $container;
+
+    function f(a) {
+      return mk(mk($container, a), ".container");
+    }
+
+    this.$header = f("#header");
+    this.$content = f("#content");
+    this.$footer = mk($container, "#footer");
+  },
+
+  addHeader($logo, $nav, $user) {
+    $logo.id = "head-logo";
+    this.$header.append($logo);
+
+    this.$header.append(this.fixNav($nav));
+
+    $user.id = "head-user";
+    this.$header.append($user);
+  },
+
+  fixNav($nav) {
+    let bestlink = '<a href="best">best</a>';
+
+    const op = document.documentElement.getAttribute("op");
+    if (op == "best") {
+      $nav.lastChild.remove();
+      $nav.lastChild.remove();
+      $nav.lastChild.remove();
+      bestlink = `<span class="topsel">${bestlink}</span>`;
+    }
+
+    let newest = $nav.firstElementChild;
+    newest.insertAdjacentHTML("afterend", `${bestlink} | `);
+
+    $nav.id = "head-nav";
+    return $nav;
+  },
+};
+
+const reLayout = {
+  query: "body",
+
+  flag: "relayout",
+
+  mode: "first",
+
+  run($body) {
+    let $hnmain = $body.querySelector("#hnmain");
+    $hnmain.style.display = "none";
+
+    let $container = mk($body, "div#page-container");
+
+    Page.init($container);
+  },
+};
+
+const fixHeader = {
+  query: "table#hnmain > tbody > tr:first-child",
+
+  flag: "flag",
+
+  mode: "first",
+
+  run(row) {
+    let $head = row.querySelector("td > table");
+    let xs = $head.rows[0].cells;
+
+    Page.addHeader(
+      xs[0].firstElementChild,
+      xs[1].firstElementChild,
+      xs[2].firstElementChild
+    );
+  },
+};
+
+const fixFooter = {
+  query: "table#hnmain > tbody > tr:last-child",
+
+  flag: "flag",
+
+  mode: "once",
+
+  run(row) {
+    let $footer = row.querySelector("td > center");
+    Page.$footer.append($footer);
+  },
+};
+
+const fixContent = {
+  query: "table#hnmain > tbody > tr:nth-child(3) > td > table",
+
+  flag: "flag",
+
+  run($content) {
+    Page.$content.append($content);
+  },
+};
+
+Runner.start(
+  reLayout,
+  fixHeader,
+  fixFooter,
+  fixContent,
+  fixItem,
+  fixComment,
+  loadMore,
+  stripStyle
+);
