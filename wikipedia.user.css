@@ -69,6 +69,10 @@ body.skin-vector #p-search form {
     border-right-width: 1px !important;
     margin-right: -1px;
   }
+
+  .rt-tooltip {
+    margin-left: calc(-50vw + 1200px / 2 - 1px);
+  }
 }
 
 body {
