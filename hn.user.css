@@ -260,13 +260,11 @@ table.fatitem td {
   transition: background 200ms;
 }
 
-.athing.comtr.hover .comhead,
-.athing.comtr .comhead:hover {
+.athing.comtr.hover .comhead {
   background: var(--bg-b);
 }
 
-.athing.comtr.hover .comhead > a.togg,
-.athing.comtr .comhead:hover > a.togg {
+.athing.comtr.hover .comhead > a.togg {
   color: var(--sec);
   text-decoration: none;
 }

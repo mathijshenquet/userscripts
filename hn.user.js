@@ -204,8 +204,6 @@ class Comment {
       container.appendChild(indItem);
     });
 
-    // add votelinks
-
     // add the other items
     for (let i = 1; i < cells.length; i++) {
       let cell = cells[i];
@@ -228,6 +226,11 @@ class Comment {
     this.container = container;
     this.cell.lastElementChild.remove();
     this.cell.appendChild(container);
+
+    // add hover for comment head
+    let comhead = container.querySelector(".comhead");
+    comhead.addEventListener("mouseenter", () => this.hover(true));
+    comhead.addEventListener("mouseleave", () => this.hover(false));
 
     // improve links
     container.querySelectorAll(`.comment a[rel="nofollow"]`).forEach((link) => {
