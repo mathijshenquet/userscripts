@@ -116,13 +116,12 @@ table.comment-tree .votearrow {
 }
 
 .comment .reply {
-  bottom: 1px;
-  left: calc(var(--comment-width) - var(--reply-width));
-  position: absolute;
+  height: 1em;
+  text-align: right;
 }
 
 .comment .reply p {
-  margin-top: 0;
+  margin: 0;
 }
 
 .comment .reply u {
