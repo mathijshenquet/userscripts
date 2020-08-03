@@ -89,7 +89,7 @@ table.comment-tree .athing td {
 }
 
 table.comment-tree {
-  margin-left: 4px;
+  margin-left: 2px;
 }
 
 table.comment-tree,
@@ -167,12 +167,6 @@ table.comment-tree .athing.coll .votelinks {
   padding-bottom: 0;
 }
 
-.title .rank:not(:empty) {
-  font-size: 9pt;
-  width: 24px;
-  display: inline-block;
-}
-
 form[action="comment"] {
   margin-bottom: 0;
 }
@@ -202,6 +196,8 @@ body {
   margin: 0;
 }
 
+/* itemlist, main page listings */
+
 table.itemlist > tbody > tr.athing > td:last-child {
   width: 100%;
 }
@@ -215,6 +211,20 @@ table.itemlist > tbody > tr > td.subtext {
   font-family: sans-serif;
 }
 
+table.itemlist td.title .rank:not(:empty) {
+  font-size: 8pt;
+  margin-right: 1px;
+  margin-top: 2.5px;
+  width: 21px;
+  overflow: hidden;
+  display: inline-block;
+}
+
+table.itemlist td.votelinks > center {
+  overflow: hidden;
+  width: 0;
+}
+
 /* fatitem, news item on comment page */
 
 table.fatitem > tbody > tr > td:last-child {
@@ -223,6 +233,10 @@ table.fatitem > tbody > tr > td:last-child {
 
 table.fatitem td {
   padding: 0;
+}
+
+table.fatitem td.votelinks > center {
+  width: 16px;
 }
 
 /* expand button */
@@ -323,11 +337,11 @@ table.fatitem td {
 /**/
 
 .pagetop {
-  font-size: 9pt;
+  font-size: 9pt !important;
 }
 
 .pagetop .hnname {
-  font-size: 10pt;
+  font-size: 10pt !important;
 }
 
 /* morelink */
