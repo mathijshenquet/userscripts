@@ -30,8 +30,8 @@ interface Task {
 
 function fold(target, dry) {
   let cursor = target.nextElementSibling;
-  let level = target.dataset.level;
-  while (cursor && cursor.dataset.level > level) {
+  let level = +target.dataset.level;
+  while (cursor && +cursor.dataset.level > level) {
     if (!dry) cursor.classList.add("noshow");
     cursor = cursor.nextElementSibling;
   }
@@ -40,8 +40,8 @@ function fold(target, dry) {
 
 function unfold(target) {
   let cursor = target.nextElementSibling;
-  let level = target.dataset.level;
-  while (cursor && cursor.dataset.level > level) {
+  let level = +target.dataset.level;
+  while (cursor && +cursor.dataset.level > level) {
     cursor.classList.remove("noshow");
     if (cursor.classList.contains("coll")) {
       cursor = fold(cursor, true);
