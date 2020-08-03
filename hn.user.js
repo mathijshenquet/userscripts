@@ -134,6 +134,24 @@ const loadMore = {
   },
 };
 
+let linkRE = /https?:\/\/(www\.)?([^\/]*)\/?(.*)/;
+const cropLinkLen = 60;
+function showLink(href) {
+  let match = href.match(linkRE);
+  if (match) {
+    href = match[2];
+    if (match[3].length > 0) {
+      href += `/${match[3]}`;
+    }
+  }
+
+  if (href.length >= cropLinkLen + 20) {
+    return href.slice(0, cropLinkLen) + "⋯";
+  } else {
+    return href;
+  }
+}
+
 class Comment {
   constructor(row, cell, $toggle) {
     this.row = row;
@@ -210,6 +228,12 @@ class Comment {
     this.container = container;
     this.cell.lastElementChild.remove();
     this.cell.appendChild(container);
+
+    // improve links
+    container.querySelectorAll(`.comment a[rel="nofollow"]`).forEach((link) => {
+      console.log(link.innerText, link.innerText.length);
+      link.innerText = showLink(link.href);
+    });
   }
 
   toggle(ev) {
