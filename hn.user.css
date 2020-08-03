@@ -191,10 +191,6 @@ br + br {
   display: none;
 }
 
-table#hnmain > tbody > tr:last-child > td {
-  padding-bottom: 1em;
-}
-
 form[action="//hn.algolia.com/"]
 {
   margin-top: 1em;
@@ -204,16 +200,6 @@ form[action="//hn.algolia.com/"]
 
 body {
   margin: 0;
-}
-
-table#hnmain {
-  width: 100%;
-}
-
-table#hnmain > tbody > tr:not(:last-child) > td > table {
-  max-width: 960px;
-  width: 100%;
-  margin: 0 auto;
 }
 
 table.itemlist > tbody > tr.athing > td:last-child {
@@ -228,6 +214,8 @@ table.itemlist > tbody > tr > td.subtext {
   font-size: 7pt;
   font-family: sans-serif;
 }
+
+/* fatitem, news item on comment page */
 
 table.fatitem > tbody > tr > td:last-child {
   width: 100%;
@@ -400,10 +388,6 @@ body {
   align-items: center;
 }
 
-#content {
-  margin: var(--content-top) 0 var(--content-bottom) 0;
-}
-
 #head-nav {
   flex: 1 0;
 }
@@ -413,10 +397,15 @@ body {
 }
 
 #content {
+  margin: var(--content-top) 0 var(--content-bottom) 0;
   min-height: calc(
     100vh - var(--content-top) - var(--content-bottom) - var(--footer-height) -
       var(--header-height)
   );
+}
+
+#content > .container > * {
+  margin-bottom: 10px;
 }
 
 #footer {
