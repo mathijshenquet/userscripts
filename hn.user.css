@@ -54,6 +54,7 @@ a:visited {
 }
 
 .comment-container .ind {
+  width: var(--width);
   flex: 0 0 var(--width);
   display: flex;
   flex-direction: column;
@@ -90,6 +91,7 @@ table.comment-tree .athing td {
 
 table.comment-tree {
   margin-left: 2px;
+  width: 100%;
 }
 
 table.comment-tree,
@@ -116,7 +118,7 @@ table.comment-tree .votearrow {
 }
 
 .comment .reply {
-  height: 1em;
+  margin-top: -3px;
   text-align: right;
 }
 
@@ -128,16 +130,20 @@ table.comment-tree .votearrow {
   text-decoration: none;
 }
 
-.comment .reply a {
-  color: transparent;
+.comment .reply a,
+.comment .reply a:link {
+  transition: color 200ms;
   text-decoration: none;
+  color: transparent;
 }
 
-.comment:hover .reply a {
+.comment .reply a {
+  padding: 4px;
+}
+
+.comment-container > .default:hover .comment .reply a, 
+.comment-container > .default:hover .comment .reply a:link {
   color: var(--sec);
-  background: #f6f6ef;
-  padding: 3px 4px;
-  text-decoration: none;
 }
 
 .comment .reply a:hover {
@@ -253,7 +259,8 @@ table.fatitem td.votelinks > center {
   margin-left: 0.4em;
 }
 
-.comhead > a.togg {
+.comhead > a.togg, 
+.comhead > a.togg:link {
   flex-grow: 1;
   order: 99;
   margin: -0.3em;
@@ -263,8 +270,16 @@ table.fatitem td.votelinks > center {
   margin-right: 0 !important;
   transition: color 200ms;
   outline: 0;
+  text-decoration: none;
 }
 
+.comment-container > .default:hover .comhead > a.togg {
+  color: var(--sec-b4)
+}
+
+.athing.comtr.hover .comhead > a.togg {
+  color: var(--sec);
+}
 /**/
 .athing.comtr .comhead {
   position: relative;
@@ -278,10 +293,7 @@ table.fatitem td.votelinks > center {
   background: var(--bg-b);
 }
 
-.athing.comtr.hover .comhead > a.togg {
-  color: var(--sec);
-  text-decoration: none;
-}
+
 
 /**/
 

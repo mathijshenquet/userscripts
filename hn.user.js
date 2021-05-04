@@ -342,10 +342,10 @@ const fixItem = {
     let commentLink = subtext.lastElementChild;
     let commentUrl = commentLink.href;
 
-    storyLink.href = commentUrl;
+    //storyLink.href = commentUrl;
 
     if (siteUrl) {
-      siteLink.href = storyUrl;
+      //siteLink.href = storyUrl;
       commentLink.insertAdjacentHTML(
         "beforebegin",
         `<a href="${siteUrl}">domain</a> | `
@@ -364,12 +364,6 @@ function dashToCamel(word) {
     dashToCamel(word.slice(i + 2))
   );
 }
-
-let domLoaded = false;
-document.addEventListener("DOMContentLoaded", (event) => {
-  document.removeEventListener("DOMContentLoaded", onready);
-  domLoaded = true;
-});
 
 const Runner = {
   tasks: [],
