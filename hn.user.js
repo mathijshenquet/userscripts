@@ -642,10 +642,10 @@ function linkback(hnlink){
   let linkback = document.createElement("a");
 
   linkback.style.display = "block";
-  linkback.style.margin = "8px 8px 8px 8px";
+  linkback.style.margin = "8px 8px 8px -4px";
   linkback.style.position = "fixed";
   linkback.style.left = "0";
-  linkback.style.bottom = "0";
+  linkback.style.top = "30%";
   linkback.style.zIndex = "999";
   linkback.style.border = "1px solid #ff6600";
   linkback.style.textDecoration = "none";
