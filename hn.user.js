@@ -238,11 +238,13 @@ function mainHN(){
         let cell = cells[i];
 
         let item = document.createElement("div");
+        cell.classList.remove("nosee");
         item.className = cell.className;
 
         let child;
         while ((child = cell.firstElementChild)) {
           child.removeAttribute("style");
+          child.classList.remove("noshow");
           if (child instanceof HTMLBRElement) child.remove();
           else item.appendChild(child);
         }
@@ -257,7 +259,7 @@ function mainHN(){
       this.cell.appendChild(container);
 
       // add hover for comment head
-      let comhead = container.querySelector(".comhead");
+      let comhead = container.querySelector(".comhead .togg");
       comhead.addEventListener("mouseenter", () => this.hover(true));
       comhead.addEventListener("mouseleave", () => this.hover(false));
 
@@ -647,6 +649,8 @@ function linkback(hnlink){
   linkback.style.left = "0";
   linkback.style.top = "30%";
   linkback.style.zIndex = "999";
+  linkback.style.background = "white"
+  linkback.style.padding = "1px";
   linkback.style.border = "1px solid #ff6600";
   linkback.style.textDecoration = "none";
 
@@ -657,7 +661,7 @@ function linkback(hnlink){
   button.style.width = "24px";
   button.style.height = "24px";
   button.style.background = "#ff6600";
-  button.style.border = "1px solid white";
+  //button.style.border = "1px solid white";
   button.style.textAlign = "center";
   button.style.color = "white";
   button.style.fontFamily = "sans-serif";

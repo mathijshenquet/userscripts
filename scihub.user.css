@@ -1,0 +1,69 @@
+
+
+
+#menu #logo {
+    position: fixed;
+    width: 100px;
+    height: 100px;
+    margin-top: 40px;
+    left: 3;
+    margin-left: 9px;
+    background-size: 101px;
+    border-radius: 50%;
+    border: 1px solid lightgray; /*#c3a9a7;*/
+    transition: border-color 1s;
+}
+
+#menu {
+    background: url("//img.sci-hub.shop/scihub/raven_1.png") no-repeat;
+    background-color: white;
+    background-position: 2px 65px;
+    background-size: 111px auto;
+    
+    width: 310px;
+    display: flex;
+    flex-direction: column;
+    
+    /*transition: margin 200ms cubic-bezier(0.0, 0.0, 0.2, 1) 200ms;*/
+    margin-left: 0;
+    
+    border-right: 1px solid lightgray;
+    box-shadow: 0 0 5px darkgray;
+}
+
+#menu:hover #logo{
+    border-color: transparent;
+}
+
+#menu:not(:hover)  {
+    margin-left: -340px;
+    transition: margin 200ms cubic-bezier(0.4, 0.0, 1, 1);
+}
+
+#menu:hover {
+    margin-left: 0;
+    transition: margin 300ms cubic-bezier(0.0, 0.0, 0.2, 1) 200ms;
+}
+
+#menu > table:first-child td:first-child {
+    width: 110px;
+}
+
+#menu > table:first-child {
+    flex-grow: 1;
+}
+
+#menu > #versions {
+    flex-grow: 2;
+}
+
+#sci {
+    background: #b22222;
+    margin-top: 100px;
+    margin-left: 0;
+    display: inline-block;
+}
+
+*:not(#top) #article {
+    margin-left: 0;
+}

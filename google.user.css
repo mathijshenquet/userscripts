@@ -1,0 +1,60 @@
+/*
+#center_col{
+    margin-left: 14px;
+}
+
+#rhs{
+    margin-left: 680px !important;
+}
+*/
+
+#top_nav, .appbar, #searchform, #fbar {
+    min-width: 1063px !important;
+}
+
+#searchform > *:first-child > *:first-child {
+    min-width: 1063px !important;   
+}
+
+/* fix root content with flexbox  */
+
+/* container */
+#rcnt {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+/* clear-both div reused as spacing */
+#rcnt > div:empty {
+    order: 1;
+    display: block;
+    clear: none;
+    flex: 0 100 170px;
+}
+
+/* main content, parent of #center-col */
+#rcnt > div:first-child {
+    float: none;
+    order: 2;
+    margin-left: 14px;
+    flex: 1 0 652px;
+}
+#center_col {
+    position: static !important;
+    margin-left: 0px !important;
+}
+
+/* side bar */
+#rhs {
+    order: 3;
+    margin-left: 14px;
+    flex: 3 0 369px;
+    float: none;
+    width: 369px;
+}
+
+/* I dont know what the heck this was tbh */
+g-img{
+    width: auto !important;
+}
