@@ -337,7 +337,7 @@ br+br {
 }
 
 form[action="//hn.algolia.com/"] {
-    margin-top: 1em;
+    margin: 0;
 }
 
 
@@ -553,7 +553,7 @@ td.more:hover {
 
 :root {
     --header-height: 24px;
-    --footer-height: 100px;
+    --footer-height: 28px;
     --content-top: 10px;
     --content-bottom: 50px;
 }
@@ -633,9 +633,26 @@ body {
 }
 
 #footer {
-    border-top: 2px solid var(--orange);
+    --footer-border: 2px;
+
+    border-top: var(--footer-border) solid var(--orange);
     height: var(--footer-height);
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--bg);
+    font-size: 8pt;
+}
+
+#footer > .container {
     display: flex;
+    height: var(--footer-height);
+    margin-top: calc(var(--footer-border) * (-1));
     align-items: center;
-    justify-content: center;
+}
+
+#footer .yclinks {
+    flex: 1 0;
+    text-align: center;
 }

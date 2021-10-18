@@ -656,8 +656,14 @@ function mainHN() {
     mode: "once",
 
     run(row) {
-      let $footer = row.querySelector("td > center");
-      Page.$footer.append($footer);
+      let form = row.querySelector("td > center > form");
+      form.classList.add("search");
+
+      let yclinks = row.querySelector("td > center > span.yclinks");
+
+      let $container = mk(Page.$footer, "div.container");
+
+      $container.append(yclinks, form);
     },
   };
 
