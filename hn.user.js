@@ -17,34 +17,33 @@ function log(...args) {
   console.log("HNq", ...args);
 }
 
-let normalizeUrlRe = /^https?:\/\/(?:www\.)?(.*)$/
+let normalizeUrlRe = /^https?:\/\/(?:www\.)?(.*)$/;
 
-function normalizeUrl(url){
+function normalizeUrl(url) {
   let out = normalizeUrlRe.exec(url);
   return out?.[1] ?? url;
 }
 
-function registerStory(storyUrl, commentUrl){
+function registerStory(storyUrl, commentUrl) {
   let key = normalizeUrl(storyUrl);
   log("Register", key, commentUrl);
-  GM_setValue(key, commentUrl)
+  GM_setValue(key, commentUrl);
 }
 
-function queryStory(urls){
+function queryStory(urls) {
   let hnLink = null;
   urls.some((url) => {
     let key = normalizeUrl(url);
     log("try", key);
-    
-    if(hnLink = GM_getValue(key)){
+
+    if ((hnLink = GM_getValue(key))) {
       return true;
     }
-  })
+  });
   return hnLink;
 }
 
-function mainHN(){
-
+function mainHN() {
   /*
   interface Task {
     query: string, // The querySelector string
@@ -264,10 +263,12 @@ function mainHN(){
       comhead.addEventListener("mouseleave", () => this.hover(false));
 
       // improve links
-      container.querySelectorAll(`.comment a[rel="nofollow"]`).forEach((link) => {
-        console.log(link.innerText, link.innerText.length);
-        link.innerText = showLink(link.href);
-      });
+      container
+        .querySelectorAll(`.comment a[rel="nofollow"]`)
+        .forEach((link) => {
+          console.log(link.innerText, link.innerText.length);
+          link.innerText = showLink(link.href);
+        });
     }
 
     toggle(ev) {
@@ -480,7 +481,8 @@ function mainHN(){
 
         if (cont == observing) return;
 
-        if (cont) observer.observe(document, { subtree: true, childList: true });
+        if (cont)
+          observer.observe(document, { subtree: true, childList: true });
         else observer.disconnect();
 
         observing = cont;
@@ -537,33 +539,65 @@ function mainHN(){
       this.$footer = mk($container, "#footer");
     },
 
-    addHeader($logo, $nav, $user) {
+    addHeader($logo, $rawNav, $user) {
       $logo.id = "head-logo";
       this.$header.append($logo);
 
-      this.$header.append(this.fixNav($nav));
+      $logo.insertAdjacentHTML("beforeEnd", 
+        `<span class="pagetop">Hacker News</span>`)
+      
+      let best = {
+        href: "/best",
+        text: "best",
+        sel: false
+      }
+
+      let entries = [best];
+      let children = Array.from($rawNav.children);
+      let past = null;
+      for(let i = 1; i < children.length; i++){
+        let $item = children[i];
+        let text = $item.innerText;
+        let sel = $item.matches(".topsel");
+        let $link = sel ? $item.querySelector("a") : $item;
+        let href = $link.href;
+        
+        if(!href){
+          if(text === "best"){
+            best.sel = true;
+          }else{
+            past.text = text;
+            past.sel = true;
+          }
+        }else{
+          let entry = {href, text, sel};
+          if(text === "past")
+            past = entry;
+          entries.push(entry);
+        }
+      }
+
+      $nav = mk('#head-nav.pagetop');
+      entries.forEach(({href, text, sel}) => {
+        let $item = mk($nav, "span.item");
+        if(sel){
+          $item.classList.add("topsel");
+        }
+        $item.innerHTML = `<a href="${href}">${text}</a>`;
+      });
+
+      $nav.id = "head-nav";
+      this.$header.append($nav);
 
       $user.id = "head-user";
       this.$header.append($user);
     },
 
-    fixNav($nav) {
-      let bestlink = '<a href="best">best</a>';
+    addBlackBand() {
+      console.log("Add Black Band");
 
-      const op = document.documentElement.getAttribute("op");
-      if (op == "best") {
-        $nav.lastChild.remove();
-        $nav.lastChild.remove();
-        $nav.lastChild.remove();
-        bestlink = `<span class="topsel">${bestlink}</span>`;
-      }
-
-      let newest = $nav.firstElementChild;
-      newest.insertAdjacentHTML("afterend", `${bestlink} | `);
-
-      $nav.id = "head-nav";
-      return $nav;
-    },
+      this.$container.style.borderTop = "5px solid black";
+    }
   };
 
   const reLayout = {
@@ -583,15 +617,27 @@ function mainHN(){
     },
   };
 
+  const checkBand = {
+    query: "table#hnmain > tbody > tr > td[bgcolor='#000000']",
+
+    flag: "flag",
+
+    mode: "first",
+
+    run() {
+      Page.addBlackBand();
+    },
+  };
+
   const fixHeader = {
-    query: "table#hnmain > tbody > tr:first-child",
+    query: "table#hnmain > tbody > tr > td[bgcolor='#ff6600']",
 
     flag: "flag",
 
     mode: "first",
 
     run(row) {
-      let $head = row.querySelector("td > table");
+      let $head = row.querySelector("table");
       let xs = $head.rows[0].cells;
 
       Page.addHeader(
@@ -616,7 +662,7 @@ function mainHN(){
   };
 
   const fixContent = {
-    query: "table#hnmain > tbody > tr:nth-child(3) > td > table",
+    query: "table#hnmain > tbody > tr:nth-last-child(2) > td > table",
 
     flag: "flag",
 
@@ -625,11 +671,11 @@ function mainHN(){
     },
   };
 
-  
   GM_addStyle(GM_getResourceText("style"));
 
   Runner.start(
     reLayout,
+    checkBand,
     fixHeader,
     fixFooter,
     fixContent,
@@ -640,7 +686,7 @@ function mainHN(){
   );
 }
 
-function linkback(hnlink){
+function linkback(hnlink) {
   let linkback = document.createElement("a");
 
   linkback.style.display = "block";
@@ -649,7 +695,7 @@ function linkback(hnlink){
   linkback.style.left = "0";
   linkback.style.top = "30%";
   linkback.style.zIndex = "999";
-  linkback.style.background = "white"
+  linkback.style.background = "white";
   linkback.style.padding = "1px";
   linkback.style.border = "1px solid #ff6600";
   linkback.style.textDecoration = "none";
@@ -675,21 +721,20 @@ function linkback(hnlink){
   document.body.append(linkback);
 }
 
-if(window.location.hostname === "news.ycombinator.com"){
-  mainHN(); 
-}else{
-  document.addEventListener('DOMContentLoaded', () => {
+if (window.location.hostname === "news.ycombinator.com") {
+  mainHN();
+} else {
+  document.addEventListener("DOMContentLoaded", () => {
     let urls = [window.location.href];
     document.head.querySelectorAll("link[rel][href]").forEach((meta) => {
-      if(["alternate", "canonical"].indexOf(meta.rel) !== -1){
-        urls.push(meta.href)
+      if (["alternate", "canonical"].indexOf(meta.rel) !== -1) {
+        urls.push(meta.href);
       }
     });
 
     let hnLink = queryStory(urls);
-    if(hnLink){
+    if (hnLink) {
       linkback(hnLink);
     }
   });
-  
 }
