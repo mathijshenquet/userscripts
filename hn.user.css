@@ -656,3 +656,15 @@ body {
     flex: 1 0;
     text-align: center;
 }
+
+#footer .error {
+    position: absolute;
+    color: red;
+    font-family: sans-serif;
+    font-size: 8pt;
+    left: 4px;
+}
+
+#footer .error:not(.show) {
+    display: none;
+}

@@ -360,7 +360,7 @@ function mainHN() {
     flag: "fix-item",
 
     run(thing) {
-      let storyLink = thing.querySelector("a.storylink");
+      let storyLink = thing.querySelector("a.titlelink");
       let storyUrl = storyLink.href;
 
       let siteLink, siteUrl;
@@ -415,21 +415,26 @@ function mainHN() {
     i: 0,
 
     exec(task, $match) {
-      if (task.flag) {
-        log("Runner#exec", task.flag);
-        $match.dataset[task.flagJs] = "";
+      try{
+        if (task.flag) {
+          log("Runner#exec", task.flag);
+          $match.dataset[task.flagJs] = "";
 
-        let result = task.run($match) ?? "";
+          let result = task.run($match) ?? "";
 
-        if (result !== false) $match.dataset[task.flagJs] = result;
-        else delete $match.dataset[task.flagJs];
+          if (result !== false) $match.dataset[task.flagJs] = result;
+          else delete $match.dataset[task.flagJs];
 
-        return result === false;
-      } else {
-        task.run($match);
-        $match.remove();
+          return result === false;
+        } else {
+          task.run($match);
+          $match.remove();
 
-        return true;
+          return true;
+        }
+      }catch(e){
+        Page.showError();
+        console.error("Error occured while processing", $match, e);
       }
     },
 
@@ -536,7 +541,15 @@ function mainHN() {
 
       this.$header = f("#header");
       this.$content = f("#content");
-      this.$footer = mk($container, "#footer");
+      this.$footer = f("#footer");
+
+      this.$error = mk(this.$footer, "span")
+      this.$error.classList.add("error")
+      this.$error.innerText = "userscript error (see console)";
+    },
+
+    showError(){
+      this.$error.classList.add("show");
     },
 
     addHeader($logo, $rawNav, $user) {
@@ -649,21 +662,19 @@ function mainHN() {
   };
 
   const fixFooter = {
-    query: "table#hnmain > tbody > tr:last-child",
+    query: "table#hnmain > tbody > tr:last-child > td > center",
 
     flag: "flag",
 
     mode: "once",
 
     run(row) {
-      let form = row.querySelector("td > center > form");
+      let form = row.querySelector("form");
       form.classList.add("search");
 
-      let yclinks = row.querySelector("td > center > span.yclinks");
+      let yclinks = row.querySelector("span.yclinks");
 
-      let $container = mk(Page.$footer, "div.container");
-
-      $container.append(yclinks, form);
+      Page.$footer.append(yclinks, form);
     },
   };
 
