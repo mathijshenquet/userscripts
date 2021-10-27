@@ -29,6 +29,7 @@
 
 ::selection {
     background: #f4d9c9;
+    text-shadow: 1px 1px 1px white;
 }
 
 .hnmore a:link,
