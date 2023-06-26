@@ -123,9 +123,12 @@ function mainHN() {
         tpl.innerHTML = await res.text();
         let content = tpl.content;
 
-        let newTable = tpl.content.querySelector(
-          "table.comment-tree, table.itemlist"
+        console.log(content);
+
+        let tmp = tpl.content.querySelectorAll(
+          "table#hnmain > tbody > tr:nth-last-child(2) > td > table"
         );
+        let newTable = tmp[tmp.length - 1];
         tbody.insertAdjacentElement("afterend", newTable.tBodies[0]);
 
         if (newTable.classList.contains("comment-tree")) {
@@ -643,7 +646,9 @@ function mainHN() {
   };
 
   const fixHeader = {
-    query: "table#hnmain > tbody > tr > td[bgcolor='#ff6600']",
+    query: 
+      "table#hnmain > tbody > tr > td[bgcolor='#ff6600'], \
+       table#hnmain > tbody > tr > td[bgcolor='#cc1010']", // christmas color
 
     flag: "flag",
 

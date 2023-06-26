@@ -1,0 +1,42 @@
+
+[mozdisallowselectionprint] #mainContainer{
+  overflow: hidden;
+}
+
+[mozdisallowselectionprint]  .secondaryToolbar {
+  margin-right: 20px;
+}
+
+[mozdisallowselectionprint] #toolbar, 
+[mozdisallowselectionprint] #toolbarContainer, 
+[mozdisallowselectionprint] #toolbarViewer {
+  height: 0;
+}
+
+[mozdisallowselectionprint] #toolbarViewerLeft, 
+[mozdisallowselectionprint] #toolbarViewerRight, 
+[mozdisallowselectionprint] #toolbarViewerMiddle {
+  float: none !important;
+  position: fixed;
+  background-color: var(--toolbar-bg-color);
+  box-shadow: 0 0 0 1px var(--toolbar-border-color);
+}
+
+[mozdisallowselectionprint] #viewerContainer {
+  top: 0;
+}
+
+[mozdisallowselectionprint] #toolbarViewerMiddle {
+  bottom: 0;
+  right: 19px;
+  left: auto;
+  transform: none;
+}
+
+[mozdisallowselectionprint] #toolbarViewerLeft {
+  left: 0;
+}
+
+[mozdisallowselectionprint] #toolbarViewerRight {
+  right: 19px;
+}

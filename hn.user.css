@@ -12,6 +12,10 @@
     --lvl: 0;
     --comment-width: 640px;
     --reply-width: 40px;
+}
+
+:root {
+    --pure: white;
     --bg: #f6f6ef;
     /*--bg-b: /*#fafaf6, #fbfbf9, #fcfcfa*/
     --bg-m: #f9f9f4;
@@ -25,11 +29,31 @@
     --orange: #ff6600;
     --orange-bd: #ffb793;
     --orange-dd: #b64400;
+    --selection-color: #f4d9c9; /* #f4d9c9; */
 }
+/* 
+@media (prefers-color-scheme: dark) {
+    :root {
+        --pure: black;
+        --bg: #121212; /*#f6f6ef;*
+        --bg-m: #151515; /* #f9f9f4; *
+        --bg-b: #181818;
+        --sec: #383838;
+        --sec-b1: #303030;
+        --sec-b2: #282828;
+        --sec-b3: #212121;
+        --sec-b4: #1a1a1a;
+        --ind: #383838;
+        --orange: #ff6600;
+        --orange-bd: #ffb793;
+        --orange-dd: #b64400;
+        --selection-color: #f4d9c9; /* #f4d9c9; *
+    }
+} */
 
 ::selection {
-    background: #f4d9c9;
-    text-shadow: 1px 1px 1px white;
+    background: var(--selection-color);
+    text-shadow: 1px 1px 2px white;
 }
 
 .hnmore a:link,
@@ -79,7 +103,7 @@ a:visited {
 
 .comment-container .ind>.stripe {
     width: 2px;
-    border-right: 1px solid white;
+    border-right: 1px solid var(--pure);
     transition: background-color 200ms;
     background-color: var(--color);
     flex: 1 0;
@@ -619,7 +643,7 @@ body {
 }
 
 #head-logo > * {
-    display: inline-block;
+    display: inline-block !important;
     vertical-align: top;
 }
 

@@ -13,7 +13,7 @@
 // @run-at        document-start
 // ==/UserScript==
 
-
+const silent = true;
 let doiUrlBase = "https://doi.org";
 const scihubServers = ["sci-hub.ren", "sci-hub.shop", "sci-hub.mksa.top", "sci-hub.se", "sci-hub.st", "sci-hub.do"].reverse();
 
@@ -74,7 +74,8 @@ const Scihub = {
         
         this.base = primary ?? secondary ?? doiUrlBase;
 
-        console.log(`[Sci-hub.user.js] Initialized, using ${this.base}`, mirrorStatus)
+        if(!silent)
+            console.log(`[Sci-hub.user.js] Initialized, using ${this.base}`, mirrorStatus)
     },
 
     urlFromDoi(doi){
@@ -166,9 +167,11 @@ const queryObserver = {
             childList: true, 
             attributeFilter: Object.keys(this.attrMap),
             attributeOldValue: true
-        }
+        } 
       
-        console.log('[Sci-hub.user.js] starting MutationObserver with', document, opts);
+        if(!silent)
+            console.log('[Sci-hub.user.js] starting MutationObserver with', document, opts);
+
         observer.observe(document, opts)
       
         applyAll(this.tasks, document);
@@ -190,21 +193,32 @@ let hostname = hostnameExtractor.strip(location.hostname);
 
 // Springer website fix
 if(hostname == "link.springer.com"){
-    queryObserver.add("#doi-url", [], (span) => {
+    const action = (span) => {
         if(!isSimple(span)){
             return;
         }
         
         let link = document.createElement("a");
-        link.href = span.innerText.trim();
+        let headerlink = document.createElement("a");
+        headerlink.href = link.href = span.innerText.trim();
       
         link = patchLink(link);
+        headerlink = patchLink(headerlink);
         if(link){
             link.innerText = link.dataset.doi;
+            headerlink.innerText = link.dataset.doi;
+
+            headerlink.style.fontSize = "1rem";
+            document.querySelector("article header").appendChild(headerlink)
+
             span.replaceChildren(link);
-            console.log("[Sci-hub.user.js] Replaced span#doi-url", span)
+            console.log("[Sci-hub.user.js - Springer] Replaced span", span)
         }
-    })
+    };
+    
+    queryObserver.add("#doi-url", [], action);
+  
+    queryObserver.add(".c-bibliographic-information__list-item--doi .c-bibliographic-information__value", [], action);
   
     queryObserver.add(".main-body > #AboutThisContent", [], (target) => {
         let parent = target.parentElement;
